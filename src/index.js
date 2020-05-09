@@ -1,15 +1,15 @@
-const express = require('express')
-require('./db/mongoose')
+import "regenerator-runtime/runtime.js"
+import config from './config'
+import * as Server from './Server'
+import * as Database from './services/Database'
 
-const customerRouter = require('./router/customer')
+const { mongoUrl } = config;
 
-const app = express()
-const port = process.env.PORT || 4000
-
-app.use(express.json())
-app.use(customerRouter)
-
-
-app.listen(port, () => {
-  console.log(`Server is up on port ${port}!`)
+Database.open({ mongoUrl })
+.then(() => {
+  Server.init()
 })
+.catch(err => {
+  console.log(":::::: GOT ERROR IN CREATING CONNECTION WITH DB ::::::");
+  error(err);
+});

@@ -3,17 +3,62 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "nodemonConfig": {
+    "exec": "npm run dev",
+    "watch": [
+      "src/*"
+    ],
+    "ignore": [
+      "**/__tests__/**",
+      "*.test.js",
+      "*.spec.js"
+    ]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "build": "npm-run-all clean transpile",
+    "server": "node dist/index.js",
+    "start": "npm-run-all build server",
+    "dev": "npm-run-all build server",
+    "transpile": "babel ./src --out-dir dist",
+    "clean": "rimraf dist",
+    "watch:dev": "nodemon"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@okta/jwt-verifier": "^1.0.0",
+    "@ylz/common": "git+https://github.com/aytekinyaliz/ylz-common.git",
+    "@ylz/connector": "git+https://github.com/aytekinyaliz/ylz-connector.git",
+    "@ylz/data-access": "git+https://github.com/aytekinyaliz/ylz-data-access.git",
+    "@ylz/logger": "git+https://github.com/aytekinyaliz/ylz-logger.git",
+    "body-parser": "^1.19.0",
+    "compression": "1.7.3",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "helmet": "^3.22.0",
     "mongoose": "^5.9.10",
     "mongoose-delete": "^0.5.2",
+    "morgan": "^1.10.0",
+    "morgan-body": "^2.4.8",
+    "regenerator-runtime": "^0.13.5",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4",
     "validator": "^13.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "nodemon": "^2.0.3",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2"
   }
 }

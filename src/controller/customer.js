@@ -1,5 +1,5 @@
 const express = require('express')
-const Customer = require('../model/customer')
+import Customer from '../repositories/customer'
 const router = new express.Router()
 
 
