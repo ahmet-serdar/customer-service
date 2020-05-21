@@ -5,49 +5,77 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import morganBody from "morgan-body";
-import config from './config'
 import { constants } from "@ylz/common";
-import customerRouter from './controller/customer'
-import { errorHandler } from './middleware'
+import customerRouter from './controller/customer/CustomerController'
+import { errorHandler, pageNotFoundHandler } from './middlewares'
+import { Router } from './Router'
 
-const { nodeEnv, port, apiPrefix } = config
-
-export const init = () => {
-  const app = express()
-  initMiddlewares(app) 
-  app.use(customerRouter)
-  initErrorHandler(app)
-
-  app.listen(port, () => {
-    console.log(`Server is up on port ${port}!`)
-  })
-}
-
-const initMiddlewares = (app) => {
-  if (nodeEnv === constants.EnvVar.PROD) {
-    app.use(helmet());
-    app.use(compress());
+const app = express()
+export class Server {
+  constructor(config, app) {
+    this.config = config;
+    this.app = app
   }
-  app.use(cookieParser());
-  app.use(
-    cors({
-      optionsSuccessStatus: 200,
-      origin: JSON.parse(config.corsOrigin)
-      // credentials: true,
-    })
-  );
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-
-  if (nodeEnv !== constants.EnvVar.TEST) {
-    morganBody(app);
+  get application() {
+    return this.app;
   }
-}
 
-const initRoutes = () => {
+  static getInstance(config) {
+    if (!Server.instance) {
 
-}
+      Server.instance = new Server(config, app);
+    }
 
-const initErrorHandler = (app) => {
-  app.use(errorHandler(nodeEnv));
+    return Server.instance;
+  }
+   
+
+   init = () => {
+    
+    this.initMiddlewares() 
+    // this.app.use(customerRouter)
+    this.initRoutes()
+    this.initErrorHandler()
+  
+    // this.app.listen(this.config.port, () => {
+    //   console.log(`Server is up on port ${this.config.port}!`)
+    // })
+  }
+  
+    initMiddlewares = () => {
+    if (this.config.nodeEnv === constants.EnvVar.PROD) {
+      this.app.use(helmet());
+      this.app.use(compress());
+    }
+    this.app.use(cookieParser());
+    this.app.use(
+      cors({
+        optionsSuccessStatus: 200,
+        origin: JSON.parse(this.config.corsOrigin)
+        // credentials: true,
+      })
+    );
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+  
+    if (this.config.nodeEnv !== constants.EnvVar.TEST) {
+      morganBody(this.app);
+    }
+  }
+  
+  initRoutes = () => {
+    const { apiPrefix } = this.config;
+    const router = Router.getInstance(this.config).router;
+
+    // mount all routes on /api path
+    this.app.use(apiPrefix, router);
+
+    // catch 404 and forward to error handler
+    this.app.use(pageNotFoundHandler);
+  }
+  
+  initErrorHandler = (app) => {
+    const { nodeEnv } = this.config
+    this.app.use(errorHandler(nodeEnv));
+  }
 }

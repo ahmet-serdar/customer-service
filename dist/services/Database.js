@@ -3,13 +3,21 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.close = exports.open = void 0;
+exports.close = exports.Database = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var open = function open(_ref) {
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Database = function Database() {
+  _classCallCheck(this, Database);
+};
+
+exports.Database = Database;
+
+Database.open = function (_ref) {
   var mongoUrl = _ref.mongoUrl;
   return new Promise(function (resolve, reject) {
     var options = {
@@ -36,8 +44,6 @@ var open = function open(_ref) {
     });
   });
 };
-
-exports.open = open;
 
 var close = function close() {
   _mongoose["default"].disconnect();

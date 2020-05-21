@@ -15,14 +15,16 @@ const config = {
   serviceName: process.env.SERVICE_NAME,
   swagger: {
     definition: {
-      basePath: "/api",
+      basePath: "/manager",
       info: {
         description: "Customer API with Swagger",
         title: "Customer API documentation",
         version: ""
-      }, servers: [`http://localhost:${process.env.PORT}`]
-    },
-    apis:["../*.js", "../**.js/routes/*.js"],
+      }, 
+      servers: [`http://localhost:${process.env.PORT}`],
+      
+    },  
+    apis: ['dist/src/**/*.js'],
     url: "/_docs"
   }
 };

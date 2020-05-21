@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
-import * as swaggerUi from 'swagger-ui-express';
+import swaggerUi from 'swagger-ui-express';
 
 class Swagger {
   getRouter ({ swaggerDefinition }) {
@@ -25,11 +25,12 @@ class Swagger {
   getUI (swaggerUrl) {
     const options = {
       swaggerUrl: `${swaggerUrl}.json`,
+      explorer: true
     };
 
     return {
       serve: swaggerUi.serve,
-      setup: swaggerUi.setup(undefined, options),
+      setup: swaggerUi.setup(null, options),
     };
   };
 };

@@ -68,8 +68,8 @@ const customerSchema = new mongoose.Schema ({
   timestamps: true
 })
 
-customerSchema.plugin(mongoose_delete, { deletedAt: true })
- 
+customerSchema.plugin(mongoose_delete, { deletedAt : true })
+
 const Customer = mongoose.model('Customer', customerSchema)
 
 module.exports = Customer 

@@ -3,17 +3,23 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.Router = void 0;
 
-var _express = _interopRequireDefault(require("express"));
+var express = _interopRequireWildcard(require("express"));
 
-var _logger = _interopRequireDefault(require("@ylz/logger"));
+var appInfo = _interopRequireWildcard(require("pjson"));
 
-var _Swagger = _interopRequireDefault(require("./lib/Swagger"));
+var _logger = require("@ylz/logger");
 
-var _customer = _interopRequireDefault(require("./controller/customer"));
+var _Swagger = _interopRequireDefault(require("./libs/Swagger"));
+
+var _routes = _interopRequireDefault(require("./controller/customer/routes"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -27,19 +33,21 @@ var Router = /*#__PURE__*/function () {
   function Router(config) {
     _classCallCheck(this, Router);
 
+    this.router = void 0;
     this.config = config;
     /**
-         * @swagger
-         * securityDefinitions:
-         *  APIKeyHeader:
-         *    type: apiKey
-         *    in: header
-         *    name: Authorization
-         */
+     * @swagger
+     * securityDefinitions:
+     *  APIKeyHeader:
+     *    type: apiKey
+     *    in: header
+     *    name: Authorization
+     */
 
-    this.router = _express["default"].Router();
+    this.router = express.Router();
     this.initSwaggerRoute();
     this.initDefaultRoutes();
+    this.initControllerRoutes();
   }
 
   _createClass(Router, [{
@@ -112,13 +120,12 @@ var Router = /*#__PURE__*/function () {
       //#endregion
 
       this.router.get("/version", function (req, res) {
-        var _appInfo = appInfo,
-            version = _appInfo.version,
-            name = _appInfo.name,
-            description = _appInfo.description;
+        var version = appInfo.version,
+            name = appInfo.name,
+            description = appInfo.description;
 
         if (!(_typeof(version) && version)) {
-          logger_1.error("An error occurred while trying to get version: Version not defined");
+          (0, _logger.error)("An error occurred while trying to get version: Version not defined");
           res.status(400).send(new Error("Version not defined"));
         }
 
@@ -128,6 +135,12 @@ var Router = /*#__PURE__*/function () {
           description: description
         });
       });
+    }
+  }, {
+    key: "initControllerRoutes",
+    value: function initControllerRoutes() {
+      // mount email routes at /customers
+      this.router.use("/customers", _routes["default"]);
     }
   }], [{
     key: "getInstance",
@@ -143,5 +156,5 @@ var Router = /*#__PURE__*/function () {
   return Router;
 }();
 
-var _default = Router;
-exports["default"] = _default;
+exports.Router = Router;
+Router.instance = void 0;

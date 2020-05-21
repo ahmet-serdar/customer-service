@@ -26,7 +26,7 @@ var config = {
   serviceName: process.env.SERVICE_NAME,
   swagger: {
     definition: {
-      basePath: "/api",
+      basePath: "/manager",
       info: {
         description: "Customer API with Swagger",
         title: "Customer API documentation",
@@ -34,7 +34,7 @@ var config = {
       },
       servers: ["http://localhost:".concat(process.env.PORT)]
     },
-    apis: ["../*.js", "../**.js/routes/*.js"],
+    apis: ['dist/src/**/*.js'],
     url: "/_docs"
   }
 };
