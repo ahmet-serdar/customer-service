@@ -50,15 +50,11 @@ var Server = /*#__PURE__*/function () {
     _classCallCheck(this, Server);
 
     this.init = function () {
-      _this.initMiddlewares(); // this.app.use(customerRouter)
-
+      _this.initMiddlewares();
 
       _this.initRoutes();
 
-      _this.initErrorHandler(); // this.app.listen(this.config.port, () => {
-      //   console.log(`Server is up on port ${this.config.port}!`)
-      // })
-
+      _this.initErrorHandler();
     };
 
     this.initMiddlewares = function () {
@@ -85,6 +81,8 @@ var Server = /*#__PURE__*/function () {
       if (_this.config.nodeEnv !== _common.constants.EnvVar.TEST) {
         (0, _morganBody["default"])(_this.app);
       }
+
+      _this.app.use((0, _middlewares.auth)());
     };
 
     this.initRoutes = function () {

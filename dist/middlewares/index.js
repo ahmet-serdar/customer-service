@@ -27,6 +27,12 @@ Object.defineProperty(exports, "schemaErrorHandler", {
     return _schemaErrorHandler.schemaErrorHandler;
   }
 });
+Object.defineProperty(exports, "auth", {
+  enumerable: true,
+  get: function get() {
+    return _auth.auth;
+  }
+});
 
 var _errorHandler = require("./errorHandler");
 
@@ -35,3 +41,5 @@ var _pageNotFoundHandler = require("./pageNotFoundHandler");
 var _controllerAdapter = require("./controllerAdapter");
 
 var _schemaErrorHandler = require("./schemaErrorHandler");
+
+var _auth = require("./auth");

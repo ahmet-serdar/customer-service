@@ -24,6 +24,7 @@ export class Router {
      */
     this.router = express.Router();
 
+    
     this.initSwaggerRoute();
     this.initDefaultRoutes();
     this.initControllerRoutes();

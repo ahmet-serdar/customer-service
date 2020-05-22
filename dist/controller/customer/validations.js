@@ -44,16 +44,17 @@ var validations = Object.freeze({
   isIndividual: {
     isBoolean: true
   },
-  address: [{
-    firstLine: {},
-    secondLine: {},
-    thirdLine: {},
-    town: {},
-    city: {},
-    postCode: {
-      isPostalCode: true
-    }
-  }],
+  // address: [{
+  //   firstLine: {      
+  //   },
+  //   secondLine: {},
+  //   thirdLine: {},
+  //   town: {},
+  //   city: {},
+  //   postCode: {
+  //     isPostalCode: true
+  //   }
+  // }],
   phones: {
     "in": [_common.constants.HttpRequestLocation.body],
     custom: {
@@ -98,7 +99,6 @@ var _default = Object.freeze({
     firstName: validations.firstName,
     lastName: validations.lastName,
     isIndividual: validations.isIndividual,
-    address: validations.address,
     phones: validations.phones,
     email: validations.email,
     createdBy: validations.createdBy
@@ -108,7 +108,6 @@ var _default = Object.freeze({
     firstName: validations.firstName,
     lastName: validations.lastName,
     isIndividual: validations.isIndividual,
-    address: validations.address,
     phones: validations.phones,
     email: validations.email,
     createdBy: validations.createdBy

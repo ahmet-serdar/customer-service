@@ -7,8 +7,9 @@ import cors from "cors";
 import morganBody from "morgan-body";
 import { constants } from "@ylz/common";
 import customerRouter from './controller/customer/CustomerController'
-import { errorHandler, pageNotFoundHandler } from './middlewares'
+import { auth, errorHandler, pageNotFoundHandler } from './middlewares'
 import { Router } from './Router'
+
 
 const app = express()
 export class Server {
@@ -33,13 +34,8 @@ export class Server {
    init = () => {
     
     this.initMiddlewares() 
-    // this.app.use(customerRouter)
     this.initRoutes()
     this.initErrorHandler()
-  
-    // this.app.listen(this.config.port, () => {
-    //   console.log(`Server is up on port ${this.config.port}!`)
-    // })
   }
   
     initMiddlewares = () => {
@@ -61,6 +57,8 @@ export class Server {
     if (this.config.nodeEnv !== constants.EnvVar.TEST) {
       morganBody(this.app);
     }
+
+    this.app.use(auth())
   }
   
   initRoutes = () => {

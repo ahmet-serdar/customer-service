@@ -1,31 +1,29 @@
+/** @format */
+
 const OktaJwtVerifier = require('@okta/jwt-verifier');
+import { responses } from "@ylz/common";
 
 const verifier = new OktaJwtVerifier({
-  issuer: `https://${process.env.OKTA_DOMAIN_URL}/oauth2/default` ,
-  clientId: process.env.CLIENT_ID,
-  assertClaims: {
-    'groups.includes': ['Everyone', 'Manager', 'Admin']
-  }
+  issuer: process.env.OKTA_DOMAIN_URL,
+  clientId: process.env.OKTA_CLIENT_ID,
+  // assertClaims: {
+  //   'groups.includes': ['Everyone', 'Manager', 'Admin']
+  // }
 });
 
-const auth = async (req, res, next) => {
-  next()
-  // try {
-  //     const token = req.header('Authorization').replace('Bearer ', '')
-  //     const decoded = verifier.verifyAccessToken(token, 'api://default')
-  //     console.log(decoded.claims)
-  //     // const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
+export function auth() {
+  return async (req, res, next) => {
+    try {
+      if (!req.headers.authorization){
+        const response = new responses.UnauthorizedResponse({},'Authentication failed! Try again.');
+        return res.status(response.metadata.code).json(response);
+      }
 
-  //     // if(!user) {
-  //     //     throw new Error()
-  //     // }
-
-  //     // req.token = token
-  //     // req.user = user
-  //     next()
-  // } catch (e) {
-  //     res.status(401).send({error: 'Please authenticate.'})
-  // }
+      const accessToken = req.headers.authorization.trim().split(' ')[1];
+      await verifier.verifyAccessToken(accessToken, 'api://default');
+      next();
+    } catch (error) {
+      next(error.message);
+    }
+  };
 }
-
-module.exports = auth

@@ -30,17 +30,17 @@ const validations = Object.freeze({
   isIndividual: {
     isBoolean: true,
   },  
-  address: [{
-    firstLine: {      
-    },
-    secondLine: {},
-    thirdLine: {},
-    town: {},
-    city: {},
-    postCode: {
-      isPostalCode: true
-    }
-  }],
+  // address: [{
+  //   firstLine: {      
+  //   },
+  //   secondLine: {},
+  //   thirdLine: {},
+  //   town: {},
+  //   city: {},
+  //   postCode: {
+  //     isPostalCode: true
+  //   }
+  // }],
   phones: {
     in: [constants.HttpRequestLocation.body],
     custom: {
@@ -82,7 +82,6 @@ export default Object.freeze({
     firstName: validations.firstName,
     lastName: validations.lastName,
     isIndividual: validations.isIndividual,
-    address: validations.address,
     phones: validations.phones,
     email: validations.email,
     createdBy: validations.createdBy
@@ -92,7 +91,6 @@ export default Object.freeze({
     firstName: validations.firstName,
     lastName: validations.lastName,
     isIndividual: validations.isIndividual,
-    address: validations.address,
     phones: validations.phones,
     email: validations.email,
     createdBy: validations.createdBy
