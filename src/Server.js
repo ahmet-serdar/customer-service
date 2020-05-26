@@ -72,7 +72,7 @@ export class Server {
     this.app.use(pageNotFoundHandler);
   }
   
-  initErrorHandler = (app) => {
+  initErrorHandler = () => {
     const { nodeEnv } = this.config
     this.app.use(errorHandler(nodeEnv));
   }

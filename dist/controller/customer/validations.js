@@ -9,13 +9,16 @@ var _common = require("@ylz/common");
 
 var _dataAccess = require("@ylz/data-access");
 
+var _validations = require("@ylz/common/dist/src/libs/validations");
+
+/** @format */
 var validations = Object.freeze({
   id: {
     custom: {
       options: function options(id) {
         return _dataAccess.utilities.isValidObjectId(id);
       },
-      errorMessage: "Wrong format!"
+      errorMessage: 'Wrong format!'
     }
   },
   firstName: {
@@ -27,7 +30,7 @@ var validations = Object.freeze({
       options: {
         min: 2
       },
-      errorMessage: "First name should be at least 2 chars long!"
+      errorMessage: 'First name should be at least 2 chars long!'
     }
   },
   lastName: {
@@ -38,14 +41,21 @@ var validations = Object.freeze({
       options: {
         min: 2
       },
-      errorMessage: "Last name should be at least 2 chars long!"
+      errorMessage: 'Last name should be at least 2 chars long!'
     }
   },
   isIndividual: {
-    isBoolean: true
+    custom: {
+      options: function options(value) {
+        if (value !== undefined || value !== null) {
+          return (0, _validations.isBoolean)(value);
+        }
+      },
+      errorMessage: 'Individual must be true or false!'
+    }
   },
   // address: [{
-  //   firstLine: {      
+  //   firstLine: {
   //   },
   //   secondLine: {},
   //   thirdLine: {},
@@ -62,7 +72,7 @@ var validations = Object.freeze({
         return Array.isArray(phones);
       },
       // && phones.length > 0 && phones.every(x => isValidObjectId(x)),
-      errorMessage: "Phones should be a list of strings!"
+      errorMessage: 'Phones should be a list of strings!'
     }
   },
   email: {
@@ -82,14 +92,14 @@ var _default = Object.freeze({
       isInt: true,
       optional: true,
       toInt: true,
-      errorMessage: "Wrong format"
+      errorMessage: 'Wrong format'
     },
     skip: {
       "in": [_common.constants.HttpRequestLocation.query],
       isInt: true,
       optional: true,
       toInt: true,
-      errorMessage: "Wrong format"
+      errorMessage: 'Wrong format'
     }
   },
   get: {

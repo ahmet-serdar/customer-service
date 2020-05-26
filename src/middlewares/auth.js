@@ -18,8 +18,7 @@ export function auth() {
         const response = new responses.UnauthorizedResponse({},'Authentication failed! Try again.');
         return res.status(response.metadata.code).json(response);
       }
-
-      const accessToken = req.headers.authorization.trim().split(' ')[1];
+      const accessToken = req.headers.authorization.trim().split(' ')[0];      
       await verifier.verifyAccessToken(accessToken, 'api://default');
       next();
     } catch (error) {

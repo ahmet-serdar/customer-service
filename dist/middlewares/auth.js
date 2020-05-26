@@ -41,7 +41,7 @@ function auth() {
               return _context.abrupt("return", res.status(response.metadata.code).json(response));
 
             case 4:
-              accessToken = req.headers.authorization.trim().split(' ')[1];
+              accessToken = req.headers.authorization.trim().split(' ')[0];
               _context.next = 7;
               return verifier.verifyAccessToken(accessToken, 'api://default');
 

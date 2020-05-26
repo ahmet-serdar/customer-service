@@ -97,7 +97,7 @@ var Server = /*#__PURE__*/function () {
       _this.app.use(_middlewares.pageNotFoundHandler);
     };
 
-    this.initErrorHandler = function (app) {
+    this.initErrorHandler = function () {
       var nodeEnv = _this.config.nodeEnv;
 
       _this.app.use((0, _middlewares.errorHandler)(nodeEnv));

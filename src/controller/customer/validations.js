@@ -1,37 +1,48 @@
-import { constants } from "@ylz/common";
-import { utilities } from "@ylz/data-access";
+/** @format */
+
+import { constants } from '@ylz/common';
+import { utilities } from '@ylz/data-access';
+import { isBoolean } from '@ylz/common/dist/src/libs/validations';
 
 const validations = Object.freeze({
   id: {
     custom: {
       options: (id) => utilities.isValidObjectId(id),
-      errorMessage: "Wrong format!"
-    }
+      errorMessage: 'Wrong format!',
+    },
   },
   firstName: {
     in: ['body'],
     exists: {
-      errorMessage: 'First name is required'
+      errorMessage: 'First name is required',
     },
     isLength: {
       options: { min: 2 },
-      errorMessage: "First name should be at least 2 chars long!"
-    }
+      errorMessage: 'First name should be at least 2 chars long!',
+    },
   },
   lastName: {
     exists: {
-      errorMessage: 'Last name is required'
+      errorMessage: 'Last name is required',
     },
-    isLength: {
+    isLength: { 
       options: { min: 2 },
-      errorMessage: "Last name should be at least 2 chars long!"
-    }
+      errorMessage: 'Last name should be at least 2 chars long!',
+    },
   },
   isIndividual: {
-    isBoolean: true,
-  },  
+    custom: {
+      options: (value) => {
+        if (value !== undefined || value !== null) {
+          return isBoolean(value)
+        }        
+      },
+      errorMessage: 'Individual must be true or false!'
+      
+    }
+  },
   // address: [{
-  //   firstLine: {      
+  //   firstLine: {
   //   },
   //   secondLine: {},
   //   thirdLine: {},
@@ -45,13 +56,13 @@ const validations = Object.freeze({
     in: [constants.HttpRequestLocation.body],
     custom: {
       options: (phones) => Array.isArray(phones), // && phones.length > 0 && phones.every(x => isValidObjectId(x)),
-      errorMessage: "Phones should be a list of strings!"
-    }
+      errorMessage: 'Phones should be a list of strings!',
+    },
   },
   email: {
-    isEmail: true
+    isEmail: true,
   },
-  createdBy: {}
+  createdBy: {},
 });
 
 /*
@@ -65,18 +76,18 @@ export default Object.freeze({
       isInt: true,
       optional: true,
       toInt: true,
-      errorMessage: "Wrong format"
+      errorMessage: 'Wrong format',
     },
     skip: {
       in: [constants.HttpRequestLocation.query],
       isInt: true,
       optional: true,
       toInt: true,
-      errorMessage: "Wrong format"
-    }
+      errorMessage: 'Wrong format',
+    },
   },
   get: {
-    id: validations.id
+    id: validations.id,
   },
   create: {
     firstName: validations.firstName,
@@ -84,7 +95,7 @@ export default Object.freeze({
     isIndividual: validations.isIndividual,
     phones: validations.phones,
     email: validations.email,
-    createdBy: validations.createdBy
+    createdBy: validations.createdBy,
   },
   update: {
     id: validations.id,
@@ -93,9 +104,9 @@ export default Object.freeze({
     isIndividual: validations.isIndividual,
     phones: validations.phones,
     email: validations.email,
-    createdBy: validations.createdBy
+    createdBy: validations.createdBy,
   },
   delete: {
-    id: validations.id
-  }
+    id: validations.id,
+  },
 });
