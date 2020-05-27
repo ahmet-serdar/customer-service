@@ -58,7 +58,7 @@ export class Server {
       morganBody(this.app);
     }
 
-    this.app.use(auth())
+    // this.app.use(auth())
   }
   
   initRoutes = () => {
