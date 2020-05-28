@@ -5,7 +5,7 @@ if (process.env.NODE_ENV === "test") {
 } else {
   dotenv.config();
 }
-
+ 
 const config = {
   apiPrefix: process.env.API_PREFIX,
   corsOrigin: process.env.CORS_ORIGIN,
