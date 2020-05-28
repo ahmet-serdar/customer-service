@@ -958,10 +958,6 @@
     "@ylz/logger" "git+https://github.com/aytekinyaliz/ylz-logger.git"
     mongoose "5.9.6"
 
-"@ylz/logger@git+https://github.com/aytekinyaliz/ylz-logger#semver:^1.0.0":
-  version "1.0.0"
-  resolved "git+https://github.com/aytekinyaliz/ylz-logger#574fc036fed79cfb4e086316ba68d6a8445edb87"
-
 "@ylz/logger@git+https://github.com/aytekinyaliz/ylz-logger.git":
   version "1.0.0"
   uid "574fc036fed79cfb4e086316ba68d6a8445edb87"
