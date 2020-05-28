@@ -21,8 +21,7 @@ const config = {
         title: "Customer API documentation",
         version: ""
       }, 
-      servers: [`http://localhost:${process.env.PORT}`],
-      
+           
     },  
     apis: ['dist/src/**/*.js'],
     url: "/_docs"
