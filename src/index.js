@@ -10,10 +10,10 @@ Database.open({ mongoUrl })
 .then(() => {
   const server = Server.getInstance(config);
   server.init()
-  const runningServer = server.application.listen(process.env.PORT || config.port);
+  const runningServer = server.application.listen(config.port);
 
   runningServer.on("listening", async () => {
-    const ann = `|| App is running at port "${process.env.PORT || config.port}" in "${process.env.PORT || config.nodeEnv}" mode ||`
+    const ann = `|| App is running at port "${config.port}" in "${config.nodeEnv}" mode ||`
     info(ann.replace(/[^]/g, "-"));
     info(ann);
     info(ann.replace(/[^]/g, "-"));
@@ -26,7 +26,7 @@ Database.open({ mongoUrl })
   });
 
   runningServer.on("close", () => {
-    console.log(`:::::: CLOSING SERVER RUNNING ON "${process.env.PORT || config.port}" IN "${config.nodeEnv}" MODE ::::::`);
+    console.log(`:::::: CLOSING SERVER RUNNING ON "${config.port}" IN "${config.nodeEnv}" MODE ::::::`);
   });
 })
 .catch(err => {
