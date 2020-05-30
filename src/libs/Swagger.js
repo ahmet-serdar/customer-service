@@ -10,7 +10,7 @@ class Swagger {
       // options for the swagger docs
       const options = {
         // path to the API docs
-        apis: ['dist/src/**/*.js'],
+        apis: ['src/**/*.js'],
         // import swaggerDefinitions
         swaggerDefinition,
       };

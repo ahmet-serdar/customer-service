@@ -36,6 +36,12 @@ class CustomerController {
     const _id = params.id;
     const customer = await Customer.findById(_id);
 
+    if(!customer) {
+      return new responses.NotFoundResponse({
+        message: 'Customer not exist!'
+      })
+    }
+
     return customer
       ? new responses.OkResponse({ data: customer })
       : new responses.BadRequestResponse({
@@ -58,7 +64,13 @@ class CustomerController {
     //     message: 'Invalid updates.',
     //   });;
     // }
-    const customer = await Customer.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
+    const customer = await Customer.findByIdAndUpdate(_id, body, {new: true, runValidators: true})
+
+    if(!customer) {
+      return new responses.NotFoundResponse({
+        message: 'Customer not exist!'
+      })
+    }
 
     return customer
       ? new responses.OkResponse({ data: customer })
@@ -75,12 +87,18 @@ class CustomerController {
     const customer = await Customer.findById(_id)
 
     if(!customer || customer.deleted === true) {
-      return res.status(404).send()
+      return new responses.NotFoundResponse({
+        message: 'Customer was deleted or not exist!'
+      })
     }
 
     await Customer.deleteById(_id)
     
-    return new responses.OkResponse({ data: customer })    
+     return customer
+      ? new responses.OkResponse({ data: customer })
+      : new responses.BadRequestResponse({
+          message: 'Could not find the customer.',
+        });    
   }
 }
 

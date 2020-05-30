@@ -13,17 +13,20 @@ const config = {
   nodeEnv: process.env.NODE_ENV,
   port: process.env.PORT,
   serviceName: process.env.SERVICE_NAME,
+  oktaIssuer: process.env.OKTA_DOMAIN_URL,
+  oktaClientId: process.env.OKTA_CLIENT_ID,
   swagger: {
     definition: {
-      basePath: "/manager",
+      basePath: "/api",
       info: {
-        description: "Customer API with Swagger",
         title: "Customer API documentation",
-        version: ""
+        description: "Customer API with Swagger",
+        version: "",
+        servers: ["http://localhost:4000"]
       }, 
            
     },  
-    apis: ['dist/src/**/*.js'],
+    apis: ['src/**/*.js'],
     url: "/_docs"
   }
 };

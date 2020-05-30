@@ -2,10 +2,11 @@
 
 const OktaJwtVerifier = require('@okta/jwt-verifier');
 const { responses } = require("@ylz/common")
+const { oktaIssuer, oktaClientId } = require('../config')
 
 const verifier = new OktaJwtVerifier({
-  issuer: process.env.OKTA_DOMAIN_URL,
-  clientId: process.env.OKTA_CLIENT_ID,
+  issuer: oktaIssuer,
+  clientId: oktaClientId,
   // assertClaims: {
   //   'groups.includes': ['Everyone', 'Manager', 'Admin']
   // }
