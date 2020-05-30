@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+const dotenv = require('dotenv')
 
 if (process.env.NODE_ENV === "test") {
   dotenv.config({ path: ".env.test" });
@@ -31,4 +31,4 @@ const config = {
 console.log(":::::: INITIAL CONFIGURATIONS ::::::");
 console.log(JSON.stringify(config, null, 2));
 
-export default config;
+module.exports = config

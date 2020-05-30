@@ -1,7 +1,7 @@
-import { error } from "@ylz/logger";
-import { responses } from "@ylz/common";
+const { error } = require("@ylz/logger")
+const { responses } = require("@ylz/common")
 
-export function controllerAdapter(controller = null, functionName = "") {
+function controllerAdapter(controller = null, functionName = "") {
   return async (req, res, next) => {
     try {
       const {
@@ -27,3 +27,4 @@ export function controllerAdapter(controller = null, functionName = "") {
     }
   };
 }
+module.exports = { controllerAdapter }

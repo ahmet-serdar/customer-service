@@ -1,7 +1,7 @@
-import { validationResult } from "express-validator";
-import { responses } from "@ylz/common";
+const { validationResult } = require("express-validator")
+const { responses } = require("@ylz/common")
 
-export function schemaErrorHandler() {
+function schemaErrorHandler() {
   return (req, res, next) => {
     const errors = validationResult(req);
 
@@ -15,3 +15,5 @@ export function schemaErrorHandler() {
     next();
   };
 }
+
+module.exports = { schemaErrorHandler }

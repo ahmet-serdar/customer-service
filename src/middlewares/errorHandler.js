@@ -1,7 +1,7 @@
-import { error } from "@ylz/logger";
-import { constants, errors, responses } from "@ylz/common";
+const { error } = require("@ylz/logger")
+const { constants, errors, responses } = require("@ylz/common")
 
-export function errorHandler(nodeEnv) {
+function errorHandler(nodeEnv) {
   return function errorHandler(err, req, res, next) {
     if (nodeEnv !== constants.EnvVar.TEST) {
       error(err);
@@ -47,3 +47,5 @@ export function errorHandler(nodeEnv) {
     res.status(response.metadata.code).json(response);
   };
 }
+
+module.exports = { errorHandler }

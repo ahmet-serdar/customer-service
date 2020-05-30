@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
-export class Database {
+class Database {
 
   static open = ({ mongoUrl }) => {
     return new Promise((resolve, reject)=> {
@@ -28,8 +28,12 @@ export class Database {
   }
 }
 
-export const close = () => {
+const close = () => {
   mongoose.disconnect();
 }
 
+module.exports = {
+  Database,
+  close 
+}
 

@@ -2,39 +2,11 @@
   "name": "customer-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "babel": {
-    "plugins": [
-      [
-        "@babel/plugin-proposal-class-properties",
-        {
-          "loose": true
-        }
-      ]
-    ],
-    "presets": [
-      "@babel/preset-env"
-    ]
-  },
-  "nodemonConfig": {
-    "exec": "npm run dev",
-    "watch": [
-      "src/*"
-    ],
-    "ignore": [
-      "**/__tests__/**",
-      "*.test.js",
-      "*.spec.js"
-    ]
-  },
+  "main": "index.js",  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm-run-all clean transpile",
-    "server": "node dist/index.js",
-    "start": "npm-run-all build server",
-    "dev": "npm-run-all build server",
-    "transpile": "babel ./src --out-dir dist",
-    "clean": "rimraf dist",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "watch:dev": "nodemon"
   },
   "author": "",

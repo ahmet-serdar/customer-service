@@ -1,7 +1,7 @@
 /** @format */
 
 const OktaJwtVerifier = require('@okta/jwt-verifier');
-import { responses } from "@ylz/common";
+const { responses } = require("@ylz/common")
 
 const verifier = new OktaJwtVerifier({
   issuer: process.env.OKTA_DOMAIN_URL,
@@ -11,7 +11,8 @@ const verifier = new OktaJwtVerifier({
   // }
 });
 
-export function auth() {
+function auth() {
+  
   return async (req, res, next) => {
     try {
       if (!req.headers.authorization){
@@ -26,3 +27,5 @@ export function auth() {
     }
   };
 }
+
+module.exports = { auth }

@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
+const { Router } = require('express')
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
 
 class Swagger {
   getRouter ({ swaggerDefinition }) {
@@ -35,4 +35,4 @@ class Swagger {
   };
 };
 
-export default Swagger
+module.exports = Swagger

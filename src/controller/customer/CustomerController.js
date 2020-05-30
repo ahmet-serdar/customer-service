@@ -1,7 +1,7 @@
-import Customer from '../../repositories/customer';
+const Customer = require('../../repositories/customer')
 
-import { debug } from '@ylz/logger';
-import { responses } from '@ylz/common';
+const { debug } = require('@ylz/logger')
+const { responses } = require('@ylz/common')
 
 class CustomerController {
   static getInstance() {
@@ -84,4 +84,4 @@ class CustomerController {
   }
 }
 
-export default CustomerController.getInstance()
+module.exports = CustomerController.getInstance()

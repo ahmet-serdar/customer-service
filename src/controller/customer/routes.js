@@ -1,8 +1,8 @@
-import express from 'express'
-import { checkSchema } from "express-validator";
-import { schemaErrorHandler, controllerAdapter } from '../../middlewares'
-import validations from "./validations";
-import customerControllerInstance from './CustomerController'
+const express = require('express')
+const { checkSchema } = require("express-validator")
+const { schemaErrorHandler, controllerAdapter } = require('../../middlewares')
+const validations = require("./validations")
+const customerControllerInstance = require('./CustomerController')
 
 
 const router = new express.Router()
