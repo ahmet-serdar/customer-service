@@ -1,5 +1,7 @@
 const { error, info } = require("@ylz/logger")
 const config = require('./config')
+const express = require('express')
+const app = express()
 const Server = require('./Server')
 const { Database } = require('./services/Database')
 
@@ -7,7 +9,7 @@ const { mongoUrl } = config;
 
 Database.open({ mongoUrl })
 .then(() => {
-  const server = Server.getInstance(config);
+  const server = Server.getInstance(config, app);
   server.init()
   const runningServer = server.application.listen(config.port);
 

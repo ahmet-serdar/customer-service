@@ -1,6 +1,5 @@
 const compress = require("compression");
 const helmet = require("helmet")
-const express = require('express')
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
@@ -11,7 +10,6 @@ const { auth, errorHandler, pageNotFoundHandler } = require('./middlewares')
 const { Router } = require('./Router')
 
 
-const app = express()
 class Server {
   constructor(config, app) {
     this.config = config;
@@ -21,7 +19,7 @@ class Server {
     return this.app;
   }
 
-  static getInstance(config) {
+  static getInstance(config, app) {
     if (!Server.instance) {
 
       Server.instance = new Server(config, app);

@@ -16,29 +16,30 @@ const router = new express.Router()
  *    post:
  *     tags:
  *       - Customer
- *     description: Creates a new Customer
+ *     summary: "Add a new customer to store"
+ *     description: 
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: customer 
  *         in: body
- *         description: Customer object
+ *         description: Firstname and Lastname are required and must be min 1 letter.
+ *                      isIndividual must be boolean or null
+ *                      Phones is not required. Phones can be empty array. if phone exist, so must be string and phone type id must be one of "home", "work" or "mobile"
  *         required: true
- *         example: {
- *                    "_id": ObjectId,
+ *         example: {                    
  *                    "firstName": string,
  *                    "lastName": string,
- *                    "isIndividual": boolean,
- *                    "deleted": false,
- *                    "address": array,
- *                    "phones": array,
- *                    "email": string,
- *                    "createdAt": date,
- *                    "updatedAt": date,
- *                    "createdBy": string      
+ *                    "isIndividual": true,
+ *                    "address": [],
+ *                    "phones": {
+ *   	                    "phone": true,
+ *                       	"phoneTypeId":"work"
+ *                              },
+ *                    "email": "testemail@test.com" ,  
+ *                    "createdBy": "string" 
  *                  }
- *       - schema:
- *           $ref: '#/repositories/customer'
+ *         
  *     responses:
  *       201:
  *         description: Successfull response
@@ -56,7 +57,13 @@ const router = new express.Router()
  *            type: object
  *            example: {
  *                       "code": "422",
- *                       "message": "",
+ *                       "message": {
+ *                                    "firstName": {
+ *                                        "msg": "First name cannot be empty",
+ *                                        "param": "firstName",
+ *                                        "location": "body"
+ *                                                 }
+ *                                 },
  *                       "timestamp": date
  *                      }
  *       500:
@@ -76,7 +83,8 @@ router.post("/", checkSchema(validations.create), schemaErrorHandler(), controll
  * /customers:
  *   get:
  *     tags:
- *       - Customers
+ *       - Customer
+ *     summary: Get all customers
  *     description: Returns all customers
  *     produces:
  *       - application/json
@@ -90,20 +98,24 @@ router.post("/", checkSchema(validations.create), schemaErrorHandler(), controll
 router.get('/', checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'list'))
 
 
-//#region [swagger: /customers/:id - GET]
+//#region [swagger: /customers/{id} - GET]
 /**
  * @swagger
- * /customers/:id:
+ * /customers/{id}:
  *   get:
  *     tags:
  *       - Customer
- *     description: Returns the customer with id
+ *     summary: Find customer by ID
+ *     description: Returns a single customer
  *     produces:
  *       - application/json
  *     parameters:
  *       - id: id
- *         description: Customer id
- *         in: query
+ *         in: path
+ *         description: Enter valid ID to retrieve customer details
+ *         name: id
+ *         type: string
+ *         format: hexadecimel
  *         required: true
  *         
  *     responses:
@@ -121,28 +133,41 @@ router.get('/', checkSchema(validations.list), schemaErrorHandler(), controllerA
 router.get('/:id', checkSchema(validations.get), schemaErrorHandler(),controllerAdapter(customerControllerInstance, 'get'))
 
 
-//#region [swagger: /customers/:id - PATCH]
+//#region [swagger: /customers/{id} - PATCH]
 /**
  * @swagger
- * /customers/:id:
+ * /customers/{id}:
  *   patch:
  *     tags:
  *       - Customer
- *     description: Update the customer
+ *     summary: Update a customer
  *     produces:
  *       - application/json
  *     parameters:
  *       - id: id
- *         description: Customer id
- *         in: query
+ *         description: Enter valid ID
+ *         name: id
+ *         type: string
+ *         format: hexadecimal
+ *         in: path
  *         required: true
  *      
- *       - name: updates
- *         description: Updates
+ *       - name: update body
+ *         description: Only value that will change can be sent
  *         in: body
+ *         type: object
  *         required: true
- *         schema:
- *           $ref: '#/repositories/Customers'
+ *         example: {                    
+ *                    "firstName": string,
+ *                    "lastName": string,
+ *                    "isIndividual": true,
+ *                    "address": [],
+ *                    "phones": {
+ *   	                    "phone": "123 456 789",
+ *                       	"phoneTypeId":"work"
+ *                              },
+ *                    "email": "testemail@test.com" 
+ *                  }
  *     responses:
  *       200:
  *         description: Succesfull response
@@ -158,25 +183,28 @@ router.get('/:id', checkSchema(validations.get), schemaErrorHandler(),controller
 router.patch('/:id', checkSchema(validations.update), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'update'))
 
 
-//#region [swagger: /customers/:id - DELETE]
+//#region [swagger: /customers/{id} - DELETE]
 /**
  * @swagger
- * /customers/:id:
+ * /customers/{id}:
  *   delete:
  *     tags:
  *       - Customer
- *     description: Delete the customer
+ *     summary: Delete a customer
+ *     description: Soft delete a customer. Only sets current date to deletedAt.
  *     produces:
  *       - application/json
  *     parameters:
  *       - id: id
- *         description: Customer id
- *         in: query
+ *         description: Enter valid ID
+ *         name: id
+ *         type: string
+ *         format: string
+ *         in: path
  *         required: true
  *     responses:
  *       200:
  *         description: Succesfull response
- *         
  *       404:
  *         description: Customer Not Found
  *         

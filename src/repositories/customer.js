@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
-const mongoose_delete = require('mongoose-delete')
 
 const customerSchema = new mongoose.Schema ({
   firstName: {
@@ -63,13 +61,14 @@ const customerSchema = new mongoose.Schema ({
   createdBy: {
     type: String,
     required: true
+  },
+  deletedAt: {
+    type: Date || null,
+    default: null
   }
 }, {
   timestamps: true
 })
-
-customerSchema.plugin(mongoose_delete, { deletedAt : true })
-
 const Customer = mongoose.model('Customer', customerSchema)
 
 module.exports = Customer 

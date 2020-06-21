@@ -22,7 +22,7 @@ const config = {
         title: "Customer API documentation",
         description: "Customer API with Swagger",
         version: "",
-        servers: ["http://localhost:4000"]
+        servers: [process.env.CORS_ORIGIN + ":" + process.env.PORT]
       }, 
            
     },  
