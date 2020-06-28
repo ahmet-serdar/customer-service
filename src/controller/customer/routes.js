@@ -1,6 +1,6 @@
 const express = require('express')
 const { checkSchema } = require("express-validator")
-const { schemaErrorHandler, controllerAdapter } = require('../../middlewares')
+const { schemaErrorHandler, controllerAdapter, auth } = require('../../middlewares')
 const validations = require("./validations")
 const customerControllerInstance = require('./CustomerController')
 
@@ -75,7 +75,7 @@ const router = new express.Router()
  */
 //#endregion
 
-router.post("/", checkSchema(validations.create), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'create'))
+router.post("/", auth, checkSchema(validations.create), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'create'))
 
 //#region [swagger: /customers - GET]
 /**
@@ -95,7 +95,7 @@ router.post("/", checkSchema(validations.create), schemaErrorHandler(), controll
  *            
  */
 //#endregion
-router.get('/', checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'list'))
+router.get('/', auth, checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'list'))
 
 
 //#region [swagger: /customers/{id} - GET]
@@ -130,7 +130,7 @@ router.get('/', checkSchema(validations.list), schemaErrorHandler(), controllerA
  *         
  */
 //#endregion
-router.get('/:id', checkSchema(validations.get), schemaErrorHandler(),controllerAdapter(customerControllerInstance, 'get'))
+router.get('/:id', auth, checkSchema(validations.get), schemaErrorHandler(),controllerAdapter(customerControllerInstance, 'get'))
 
 
 //#region [swagger: /customers/{id} - PATCH]
@@ -180,7 +180,7 @@ router.get('/:id', checkSchema(validations.get), schemaErrorHandler(),controller
  *         
  */
 //#endregion
-router.patch('/:id', checkSchema(validations.update), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'update'))
+router.patch('/:id', auth, checkSchema(validations.update), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'update'))
 
 
 //#region [swagger: /customers/{id} - DELETE]
@@ -214,7 +214,7 @@ router.patch('/:id', checkSchema(validations.update), schemaErrorHandler(), cont
  *
  */
 //#endregion
-router.delete('/:id', checkSchema(validations.delete), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'delete'))
+router.delete('/:id', auth, checkSchema(validations.delete), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'delete'))
 
 
 module.exports = router;

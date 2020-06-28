@@ -43,11 +43,7 @@ class Server {
     }
     this.app.use(cookieParser());
     this.app.use(
-      cors({
-        optionsSuccessStatus: 200,
-        origin: JSON.parse(this.config.corsOrigin)
-        // credentials: true,
-      })
+      cors()
     );
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));

@@ -42,10 +42,11 @@ class CustomerController {
   async list({ query }) {
     debug('CustomerController - list:', JSON.stringify(query, null, 2));
 
-    const { limit, skip } = query;
-    const data = await Customer.find({ limit, skip });
+    const { limit = 10, skip = 0 } = query;
+    const data = await Customer.find({},null,{ limit, skip: skip * limit });
+    const length = await Customer.find().count()
 
-    return new responses.OkResponse(data);
+    return new responses.OkResponse({data, length});
   }
 
   async get({ params }) {
@@ -54,15 +55,10 @@ class CustomerController {
     const _id = params.id;
     const customer = await Customer.findById(_id);
 
-    if (!customer) {
-      return new responses.NotFoundResponse(undefined, 'Customer not exist!');
-    }
-
     return customer
       ? new responses.OkResponse(customer)
-      : new responses.BadRequestResponse(
-          undefined,
-          'Could not find the customer.'
+      : new responses.NotFoundResponse(
+          'Customer not exist!'
         );
   }
 
@@ -88,7 +84,7 @@ class CustomerController {
       const notAllowedUpdates = updates.filter(
         (update) => !allowedUpdates.includes(update)
       );
-      return new responses.BadRequestResponse(undefined, notAllowedUpdates);
+      return new responses.BadRequestResponse(undefined, `${notAllowedUpdates} is/are not allowed to update!`);
     }
 
     const customer = await Customer.findByIdAndUpdate(_id, body, {
@@ -96,16 +92,9 @@ class CustomerController {
       runValidators: true,
     });
 
-    if (!customer) {
-      return new responses.NotFoundResponse(undefined, 'Customer not exist!');
-    }
-
     return customer
       ? new responses.OkResponse(customer)
-      : new responses.BadRequestResponse(
-          undefined,
-          'Could not find the customer.'
-        );
+      : new responses.NotFoundResponse('Customer not exist!');
   }
 
   async delete({ params }) {
@@ -115,21 +104,15 @@ class CustomerController {
 
     let customer = await Customer.findById(_id);
 
-    // if(!customer || customer.isDeleted === true) {
-    //   return new responses.NotFoundResponse('Customer was deleted or not exist!')
-    // }
     customer = await Customer.findByIdAndUpdate(
       _id,
-      { isDeleted: true, deletedAt: new Date() },
+      { deletedAt: new Date() },
       { new: true, runValidators: true }
     );
 
     return customer
       ? new responses.OkResponse(customer)
-      : new responses.BadRequestResponse(
-          undefined,
-          'Could not find the customer.'
-        );
+      : new responses.NotFoundResponse('Customer not exist!');
   }
 }
 

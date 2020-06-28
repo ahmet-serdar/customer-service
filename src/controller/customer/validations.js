@@ -19,7 +19,7 @@ const validations = Object.freeze({
           if(value) {
             return value.length >= 1}
         },
-        errorMessage: `First name cannot be empty`
+        errorMessage: `First name is required!`
       }
   }},
   lastName(locationType = constants.HttpRequestLocation.query, isRequired = true) {
@@ -31,7 +31,7 @@ const validations = Object.freeze({
           if(value) {
             return value.length >= 1}
         },
-        errorMessage: `First name cannot be empty`
+        errorMessage: `Last name is required!`
       }
   }},
   isIndividual(locationType = constants.HttpRequestLocation.query, isRequired = true) {
@@ -44,18 +44,15 @@ const validations = Object.freeze({
       }
     };
   },
-    phones(locationType = constants.HttpRequestLocation.query, isRequired = true) {
+  phones(locationType = constants.HttpRequestLocation.query, isRequired = true) {
       return {
         in: [locationType],
         optional: !isRequired,
         custom: {
           options: (phones) => {
-            console.log(phones.length, 'phones')
             if(phones.length > 0) {              
              const arr = phones.map(phone => {
-                const phoneTypes = ['mobile', 'home','work'];
-                console.log(phoneTypes.indexOf(phone.phoneTypeId) > -1 && phone.phone !== null, 'phone')
-                
+                const phoneTypes = ['mobile', 'home','work'];                
                 if (phone){
                   return (phoneTypes.indexOf(phone.phoneTypeId) > -1 && typeof phone.phone === "string" && phone.phone.length > 0 );
                 }
@@ -67,15 +64,26 @@ const validations = Object.freeze({
               return true
             }
           },
-          errorMessage: `Please check your telefon number and phone type. Phone type can be one of ${['mobile ', 'home ','work']}`
+          errorMessage: `Please check your telefon number and phone type.`
         }
       };
     },
-  email: {
-    optional: { options: { nullable: true } },
-    isEmail: true,
-    errorMessage: 'Please include an @ in the email address.'    
-  },
+    email(locationType = constants.HttpRequestLocation.query, isRequired = true) {
+      return {
+        in: [locationType],
+        optional: !isRequired,
+        custom: {
+          options: (value) => {
+            if(value !== null && value.length !== 0 ) {
+              return new RegExp("[a-zA-Z0-9_]+.[a-zA-Z0-9_]+@[a-zA-Z0-9]+.[a-z]{1,8}").test(value)
+          }
+          else {
+            return true
+          }
+        },
+          errorMessage: `Please check your email!`
+        }
+    }},
   createdBy(locationType = constants.HttpRequestLocation.query, isRequired = true) {
     return {
       in: [locationType],
@@ -119,7 +127,7 @@ const validator = Object.freeze({
     lastName: validations.lastName('body'),
     isIndividual: validations.isIndividual('body', false),
     phones: validations.phones('body', false),
-    email: validations.email,
+    email: validations.email('body', false),
     createdBy: validations.createdBy('body')
   },
   update: {
@@ -128,7 +136,7 @@ const validator = Object.freeze({
     lastName: validations.lastName('body', false),
     isIndividual: validations.isIndividual('body', false),
     phones: validations.phones('body', false),
-    email: validations.email
+    email: validations.email('body', false),
   },
   delete: {
     id: validations.id,
