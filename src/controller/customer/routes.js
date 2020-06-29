@@ -36,9 +36,16 @@ const router = new express.Router()
  *                    "firstName": string,
  *                    "lastName": string,
  *                    "isIndividual": true,
- *                    "address": [],
+ *                    "address": [ {
+ *                                  "firstLine": "string",
+ *                                   "secondLine": "string",
+ *                                   "thirdLine": "string",
+ *                                   "town": "string",
+ *                                   "city": "string",
+ *                                   "postCode": "string"
+ *                               }],
  *                    "phones": {
- *   	                    "phone": true,
+ *   	                    "phone": "123 123 1234",
  *                       	"phoneTypeId":"work"
  *                              },
  *                    "email": "testemail@test.com" 
@@ -89,7 +96,7 @@ router.post("/", auth, checkSchema(validations.create), schemaErrorHandler(), co
 //#region [swagger: /customers - GET]
 /**
  * @swagger
- * /customers?skip=0&limit=5:
+ * /customers?skip=0&limit=10:
  *   get:
  *     tags:
  *       - Customer

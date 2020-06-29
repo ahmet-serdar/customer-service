@@ -93,7 +93,6 @@ class CustomerController {
       runValidators: true,
     });
 
-
     return customer
       ? new responses.OkResponse(customer)
       : new responses.NotFoundResponse('Customer not exist!');

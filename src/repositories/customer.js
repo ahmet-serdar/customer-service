@@ -16,6 +16,7 @@ const customerSchema = new mongoose.Schema ({
     default: true,
   },
   address:[{
+    _id : false,
     firstLine: {
       type: String,
       trim: true
@@ -42,6 +43,7 @@ const customerSchema = new mongoose.Schema ({
     },
   }],
   phones: [{
+    _id : false,
     phone: {
       type: String,
       trim: true,
