@@ -21,6 +21,11 @@ const router = new express.Router()
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: Bearer Authentication Token (It will be written as "Bearer + space + idToken" )
+ *         in: header
+ *         type: string
+ *         required: true
  *       - name: customer 
  *         in: body
  *         description: Firstname and Lastname are required and must be min 1 letter.
@@ -36,8 +41,7 @@ const router = new express.Router()
  *   	                    "phone": true,
  *                       	"phoneTypeId":"work"
  *                              },
- *                    "email": "testemail@test.com" ,  
- *                    "createdBy": "string" 
+ *                    "email": "testemail@test.com" 
  *                  }
  *         
  *     responses:
@@ -51,6 +55,11 @@ const router = new express.Router()
  *                       "message": "Created",
  *                       "timestamp": date
  *                      }
+ *       401:
+ *         description: Unauthorized Error
+ *         schema: 
+ *           type: string
+ *           example: "Authentication failed! Try again." 
  *       422: 
  *          description: Unprocessable Entity
  *          schema:
@@ -80,7 +89,7 @@ router.post("/", auth, checkSchema(validations.create), schemaErrorHandler(), co
 //#region [swagger: /customers - GET]
 /**
  * @swagger
- * /customers:
+ * /customers?skip=0&limit=5:
  *   get:
  *     tags:
  *       - Customer
@@ -88,10 +97,28 @@ router.post("/", auth, checkSchema(validations.create), schemaErrorHandler(), co
  *     description: Returns all customers
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - name: authorization
+ *         description: Bearer Authentication Token (It will be written as "Bearer + space + idToken" )
+ *         in: header
+ *         type: string
+ *         required: true
+ *       - in: query
+ *         name: skip
+ *         type: integer
+ *         description: The number of pages to skip before starting to collect the result set.
+ *       - in: query
+ *         name: limit
+ *         type: integer
+ *         description: The numbers of customers to return.
  *     responses:
  *       200:
- *         description: An array of customers
- *        
+ *         description: An array of customers and number of all customers in the database
+ *       401:
+ *         description: Unauthorized Error
+ *         schema: 
+ *           type: string
+ *           example: "Authentication failed! Try again."    
  *            
  */
 //#endregion
@@ -110,6 +137,11 @@ router.get('/', auth, checkSchema(validations.list), schemaErrorHandler(), contr
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: Bearer Authentication Token (It will be written as "Bearer + space + idToken" )
+ *         in: header
+ *         type: string
+ *         required: true
  *       - id: id
  *         in: path
  *         description: Enter valid ID to retrieve customer details
@@ -121,7 +153,11 @@ router.get('/', auth, checkSchema(validations.list), schemaErrorHandler(), contr
  *     responses:
  *       200:
  *         description: Succesfull response
- *         
+ *       401:
+ *         description: Unauthorized Error
+ *         schema: 
+ *           type: string
+ *           example: "Authentication failed! Try again."         
  *       404:
  *         description: Customer Not Found
  *         
@@ -144,6 +180,11 @@ router.get('/:id', auth, checkSchema(validations.get), schemaErrorHandler(),cont
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: Bearer Authentication Token (It will be written as "Bearer + space + idToken" )
+ *         in: header
+ *         type: string
+ *         required: true
  *       - id: id
  *         description: Enter valid ID
  *         name: id
@@ -153,7 +194,7 @@ router.get('/:id', auth, checkSchema(validations.get), schemaErrorHandler(),cont
  *         required: true
  *      
  *       - name: update body
- *         description: Only value that will change can be sent
+ *         description: Valid updates are  'firstName', 'lastName', 'isIndividual', 'address', 'phones', 'email'
  *         in: body
  *         type: object
  *         required: true
@@ -171,6 +212,11 @@ router.get('/:id', auth, checkSchema(validations.get), schemaErrorHandler(),cont
  *     responses:
  *       200:
  *         description: Succesfull response
+ *       401:
+ *         description: Unauthorized Error
+ *         schema: 
+ *           type: string
+ *           example: "Authentication failed! Try again." 
  *         
  *       404:
  *         description: Customer Not Found
@@ -195,6 +241,11 @@ router.patch('/:id', auth, checkSchema(validations.update), schemaErrorHandler()
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: Bearer Authentication Token (It will be written as "Bearer + space + idToken" )
+ *         in: header
+ *         type: string
+ *         required: true
  *       - id: id
  *         description: Enter valid ID
  *         name: id
@@ -205,6 +256,11 @@ router.patch('/:id', auth, checkSchema(validations.update), schemaErrorHandler()
  *     responses:
  *       200:
  *         description: Succesfull response
+ *       401:
+ *         description: Unauthorized Error
+ *         schema: 
+ *           type: string
+ *           example: "Authentication failed! Try again." 
  *       404:
  *         description: Customer Not Found
  *         

@@ -14,8 +14,9 @@ class CustomerController {
     return CustomerController.instance;
   }
 
-  async create({ body }) {
-    // debug('CustemerController - create:', JSON.stringify(body));
+  async create({ body, locals }) {
+    debug('CustemerController - create:', JSON.stringify(body));
+    const managerID = locals.managerID
     const bodyKeys = Object.keys(body);
     const allowedKeys = [
       'firstName',
@@ -23,8 +24,7 @@ class CustomerController {
       'isIndividual',
       'address',
       'phones',
-      'email',
-      'createdBy',
+      'email'
     ];
     const isValidOperation = bodyKeys.every((key) => allowedKeys.includes(key));
 
@@ -33,6 +33,7 @@ class CustomerController {
     }
 
     const customer = new Customer(body);
+    customer.createdBy = managerID
 
     await customer.save();
 
@@ -92,21 +93,25 @@ class CustomerController {
       runValidators: true,
     });
 
+
     return customer
       ? new responses.OkResponse(customer)
       : new responses.NotFoundResponse('Customer not exist!');
   }
 
-  async delete({ params }) {
+  async delete({ params, locals }) {
     debug('CustomerController - delete:', JSON.stringify(params));
-
+    const managerID = locals.managerID
     const _id = params.id;
 
     let customer = await Customer.findById(_id);
+    if(customer.deletedAt !== null) {
+      return new responses.BadRequestResponse('Customer was already deleted!')
+    }
 
     customer = await Customer.findByIdAndUpdate(
       _id,
-      { deletedAt: new Date() },
+      { deletedAt: new Date(), deletedBy: managerID },
       { new: true, runValidators: true }
     );
 

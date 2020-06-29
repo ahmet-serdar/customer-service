@@ -83,19 +83,7 @@ const validations = Object.freeze({
         },
           errorMessage: `Please check your email!`
         }
-    }},
-  createdBy(locationType = constants.HttpRequestLocation.query, isRequired = true) {
-    return {
-      in: [locationType],
-      optional: !isRequired,
-      custom: {
-        options: (value) => {
-          if(value) {
-            return value.length >= 1}
-        },
-        errorMessage: `CreatedBy cannot be empty`
-      }
-  }}
+    }}
 });
 
 /*
@@ -127,8 +115,7 @@ const validator = Object.freeze({
     lastName: validations.lastName('body'),
     isIndividual: validations.isIndividual('body', false),
     phones: validations.phones('body', false),
-    email: validations.email('body', false),
-    createdBy: validations.createdBy('body')
+    email: validations.email('body', false)
   },
   update: {
     id: validations.id,
