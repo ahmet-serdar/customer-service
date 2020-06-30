@@ -91,7 +91,7 @@ const router = new express.Router()
  */
 //#endregion
 
-router.post("/", auth, checkSchema(validations.create), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'create'))
+router.post("/", checkSchema(validations.create), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'create'))
 
 //#region [swagger: /customers - GET]
 /**
@@ -129,7 +129,7 @@ router.post("/", auth, checkSchema(validations.create), schemaErrorHandler(), co
  *            
  */
 //#endregion
-router.get('/', auth, checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'list'))
+router.get('/', checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'list'))
 
 
 //#region [swagger: /customers/{id} - GET]
@@ -173,7 +173,7 @@ router.get('/', auth, checkSchema(validations.list), schemaErrorHandler(), contr
  *         
  */
 //#endregion
-router.get('/:id', auth, checkSchema(validations.get), schemaErrorHandler(),controllerAdapter(customerControllerInstance, 'get'))
+router.get('/:id', checkSchema(validations.get), schemaErrorHandler(),controllerAdapter(customerControllerInstance, 'get'))
 
 
 //#region [swagger: /customers/{id} - PATCH]
@@ -233,7 +233,7 @@ router.get('/:id', auth, checkSchema(validations.get), schemaErrorHandler(),cont
  *         
  */
 //#endregion
-router.patch('/:id', auth, checkSchema(validations.update), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'update'))
+router.patch('/:id', checkSchema(validations.update), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'update'))
 
 
 //#region [swagger: /customers/{id} - DELETE]
@@ -277,7 +277,7 @@ router.patch('/:id', auth, checkSchema(validations.update), schemaErrorHandler()
  *
  */
 //#endregion
-router.delete('/:id', auth, checkSchema(validations.delete), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'delete'))
+router.delete('/:id', checkSchema(validations.delete), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'delete'))
 
 
 module.exports = router;
