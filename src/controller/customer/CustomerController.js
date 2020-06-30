@@ -45,9 +45,8 @@ class CustomerController {
 
     const { limit , skip } = query;
     const data = await Customer.find({},null,{ limit, skip: skip * limit });
-    const length = await Customer.find().count()
 
-    return new responses.OkResponse({data, length});
+    return new responses.OkResponse(data);
   }
 
   async get({ params }) {
