@@ -1,14 +1,15 @@
-import "regenerator-runtime/runtime.js"
-import { error, info } from "@ylz/logger";
-import config from './config'
-import { Server } from './Server'
-import { Database } from './services/Database'
+const { error, info } = require("@ylz/logger")
+const config = require('./config')
+const express = require('express')
+const app = express()
+const Server = require('./Server')
+const { Database } = require('./services/Database')
 
 const { mongoUrl } = config;
 
 Database.open({ mongoUrl })
 .then(() => {
-  const server = Server.getInstance(config);
+  const server = Server.getInstance(config, app);
   server.init()
   const runningServer = server.application.listen(config.port);
 

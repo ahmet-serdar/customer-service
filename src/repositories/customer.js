@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
-const mongoose_delete = require('mongoose-delete')
 
 const customerSchema = new mongoose.Schema ({
   firstName: {
@@ -18,6 +16,7 @@ const customerSchema = new mongoose.Schema ({
     default: true,
   },
   address:[{
+    _id : false,
     firstLine: {
       type: String,
       trim: true
@@ -44,6 +43,7 @@ const customerSchema = new mongoose.Schema ({
     },
   }],
   phones: [{
+    _id : false,
     phone: {
       type: String,
       trim: true,
@@ -63,13 +63,26 @@ const customerSchema = new mongoose.Schema ({
   createdBy: {
     type: String,
     required: true
+  },
+  deletedAt: {
+    type: Date || null,
+    default: null
+  },
+  deletedBy: {
+    type: String,
+    default: null
   }
 }, {
   timestamps: true
 })
 
-customerSchema.plugin(mongoose_delete, { deletedAt : true })
-
+customerSchema.set('toJSON', {
+  transform: function (doc, ret, options) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+  }
+}); 
 const Customer = mongoose.model('Customer', customerSchema)
 
 module.exports = Customer 

@@ -1,5 +1,7 @@
-import { errors } from "@ylz/common";
+const { errors } = require("@ylz/common")
 
-export function pageNotFoundHandler(req, res, next) {
+function pageNotFoundHandler(req, res, next) {
   return res.locals.isHit ? next() : next(new errors.NotFoundError([]))
 } 
+
+module.exports = { pageNotFoundHandler }

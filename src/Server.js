@@ -1,18 +1,16 @@
-import * as compress from "compression";
-import * as helmet from "helmet";
-import express from 'express'
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import morganBody from "morgan-body";
-import { constants } from "@ylz/common";
-import customerRouter from './controller/customer/CustomerController'
-import { auth, errorHandler, pageNotFoundHandler } from './middlewares'
-import { Router } from './Router'
+const compress = require("compression");
+const helmet = require("helmet")
+const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
+const cors = require("cors")
+const morganBody = require("morgan-body")
+const { constants } = require("@ylz/common")
+const customerRouter = require('./controller/customer/CustomerController')
+const { auth, errorHandler, pageNotFoundHandler } = require('./middlewares')
+const { Router } = require('./Router')
 
 
-const app = express()
-export class Server {
+class Server {
   constructor(config, app) {
     this.config = config;
     this.app = app
@@ -21,7 +19,7 @@ export class Server {
     return this.app;
   }
 
-  static getInstance(config) {
+  static getInstance(config, app) {
     if (!Server.instance) {
 
       Server.instance = new Server(config, app);
@@ -45,11 +43,7 @@ export class Server {
     }
     this.app.use(cookieParser());
     this.app.use(
-      cors({
-        optionsSuccessStatus: 200,
-        origin: JSON.parse(this.config.corsOrigin)
-        // credentials: true,
-      })
+      cors()
     );
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -58,7 +52,7 @@ export class Server {
       morganBody(this.app);
     }
 
-    this.app.use(auth())
+    // this.app.use(auth())
   }
   
   initRoutes = () => {
@@ -77,3 +71,5 @@ export class Server {
     this.app.use(errorHandler(nodeEnv));
   }
 }
+
+module.exports = Server

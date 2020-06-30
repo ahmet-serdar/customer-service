@@ -1,14 +1,14 @@
-import * as express from "express";
-import * as appInfo from "pjson";
-// import { libs } from "@ylz/common";
-import { error } from "@ylz/logger";
+const express = require("express")
+const appInfo = require("pjson")
+// const { libs } = require("@ylz/common")
+const { error } = require("@ylz/logger")
 
-import Swagger from "./libs/Swagger";
-import customerRouter from './controller/customer/routes'
+const Swagger = require("./libs/Swagger")
+const customerRouter = require('./controller/customer/routes')
 
 
 
-export class Router {
+class Router {
   static instance
   router
 
@@ -119,3 +119,5 @@ export class Router {
     this.router.use("/customers", customerRouter);
   }
 }
+
+module.exports = {Router}

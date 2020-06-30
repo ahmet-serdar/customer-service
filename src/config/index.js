@@ -1,11 +1,11 @@
-import dotenv from 'dotenv'
+const dotenv = require('dotenv')
 
 if (process.env.NODE_ENV === "test") {
   dotenv.config({ path: ".env.test" });
 } else {
   dotenv.config();
 }
-
+   
 const config = {
   apiPrefix: process.env.API_PREFIX,
   corsOrigin: process.env.CORS_ORIGIN,
@@ -13,18 +13,20 @@ const config = {
   nodeEnv: process.env.NODE_ENV,
   port: process.env.PORT,
   serviceName: process.env.SERVICE_NAME,
+  oktaIssuer: process.env.OKTA_DOMAIN_URL,
+  oktaClientId: process.env.OKTA_CLIENT_ID,
   swagger: {
     definition: {
-      basePath: "/manager",
+      basePath: "/api",
       info: {
-        description: "Customer API with Swagger",
         title: "Customer API documentation",
-        version: ""
+        description: "Customer API with Swagger",
+        version: "",
+        servers: [process.env.CORS_ORIGIN + ":" + process.env.PORT]
       }, 
-      servers: [`http://localhost:${process.env.PORT}`],
-      
+           
     },  
-    apis: ['dist/src/**/*.js'],
+    apis: ['src/**/*.js'],
     url: "/_docs"
   }
 };
@@ -32,4 +34,4 @@ const config = {
 console.log(":::::: INITIAL CONFIGURATIONS ::::::");
 console.log(JSON.stringify(config, null, 2));
 
-export default config;
+module.exports = config

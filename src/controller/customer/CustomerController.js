@@ -1,7 +1,9 @@
-import Customer from '../../repositories/customer';
+/** @format */
 
-import { debug } from '@ylz/logger';
-import { responses } from '@ylz/common';
+const Customer = require('../../repositories/customer');
+
+const { debug } = require('@ylz/logger');
+const { responses } = require('@ylz/common');
 
 class CustomerController {
   static getInstance() {
@@ -12,22 +14,40 @@ class CustomerController {
     return CustomerController.instance;
   }
 
-  async create({ body }){
+  async create({ body, locals }) {
     debug('CustemerController - create:', JSON.stringify(body));
+    const managerID = locals.managerID
+    const bodyKeys = Object.keys(body);
+    const allowedKeys = [
+      'firstName',
+      'lastName',
+      'isIndividual',
+      'address',
+      'phones',
+      'email'
+    ];
+    const isValidOperation = bodyKeys.every((key) => allowedKeys.includes(key));
 
-    const customer = new Customer(body)
-    await customer.save()
+    if (!isValidOperation) {
+      return new responses.BadRequestResponse(undefined, 'Invalid keys!.');
+    }
 
-    return new responses.CreatedResponse({ data: customer });
+    const customer = new Customer(body);
+    customer.createdBy = managerID
+
+    await customer.save();
+
+    return new responses.CreatedResponse(customer._id);
   }
 
   async list({ query }) {
     debug('CustomerController - list:', JSON.stringify(query, null, 2));
 
-    const { limit, skip } = query;
-    const data = await Customer.find({ limit, skip });
+    const { limit , skip } = query;
+    const data = await Customer.find({},null,{ limit, skip: skip * limit });
+    const length = await Customer.find().count()
 
-    return new responses.OkResponse({ data });
+    return new responses.OkResponse({data, length});
   }
 
   async get({ params }) {
@@ -37,51 +57,67 @@ class CustomerController {
     const customer = await Customer.findById(_id);
 
     return customer
-      ? new responses.OkResponse({ data: customer })
-      : new responses.BadRequestResponse({
-          message: 'Could not find the customer.',
-        });
+      ? new responses.OkResponse(customer)
+      : new responses.NotFoundResponse(
+          'Customer not exist!'
+        );
   }
 
-  async update(req, res){
-    const {params, body} = req
-    debug("CustomerController - update:", JSON.stringify({ params, body }));
-
-    const _id = params.id
-    const updates = Object.keys(body)
-    // const allowedUpdates = ['firstName', 'lastName', 'address', 'phones', 'email', 'isIndividual']
-    // const isValidOperation = updates.every(update =>
-    //   allowedUpdates.includes(update)
-    // );
-    // if (!isValidOperation) {
-    //   return new responses.BadRequestResponse({
-    //     message: 'Invalid updates.',
-    //   });;
-    // }
-    const customer = await Customer.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
-
-    return customer
-      ? new responses.OkResponse({ data: customer })
-      : new responses.BadRequestResponse({
-          message: 'Could not find the customer.',
-        });
-  }
-
-  async delete({ params }) {
-    debug("CustomerController - delete:", JSON.stringify(params));
+  async update(req, res) {
+    const { params, body } = req;
+    debug('CustomerController - update:', JSON.stringify({ params, body }));
 
     const _id = params.id;
+    const updates = Object.keys(body);
+    const allowedUpdates = [
+      'firstName',
+      'lastName',
+      'isIndividual',
+      'address',
+      'phones',
+      'email',
+    ];
+    const isValidOperation = updates.every((update) =>
+      allowedUpdates.includes(update)
+    );
 
-    const customer = await Customer.findById(_id)
-
-    if(!customer || customer.deleted === true) {
-      return res.status(404).send()
+    if (!isValidOperation) {
+      const notAllowedUpdates = updates.filter(
+        (update) => !allowedUpdates.includes(update)
+      );
+      return new responses.BadRequestResponse(undefined, `${notAllowedUpdates} is/are not allowed to update!`);
     }
 
-    await Customer.deleteById(_id)
-    
-    return new responses.OkResponse({ data: customer })    
+    const customer = await Customer.findByIdAndUpdate(_id, body, {
+      new: true,
+      runValidators: true,
+    });
+
+    return customer
+      ? new responses.OkResponse(customer)
+      : new responses.NotFoundResponse('Customer not exist!');
+  }
+
+  async delete({ params, locals }) {
+    debug('CustomerController - delete:', JSON.stringify(params));
+    const managerID = locals.managerID
+    const _id = params.id;
+
+    let customer = await Customer.findById(_id);
+    if(customer.deletedAt !== null) {
+      return new responses.BadRequestResponse('Customer was already deleted!')
+    }
+
+    customer = await Customer.findByIdAndUpdate(
+      _id,
+      { deletedAt: new Date(), deletedBy: managerID },
+      { new: true, runValidators: true }
+    );
+
+    return customer
+      ? new responses.OkResponse(customer)
+      : new responses.NotFoundResponse('Customer not exist!');
   }
 }
 
-export default CustomerController.getInstance()
+module.exports = CustomerController.getInstance();
