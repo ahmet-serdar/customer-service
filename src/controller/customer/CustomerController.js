@@ -43,7 +43,7 @@ class CustomerController {
   async list({ query }) {
     debug('CustomerController - list:', JSON.stringify(query, null, 2));
 
-    const { limit = 10, skip = 0 } = query;
+    const { limit , skip } = query;
     const data = await Customer.find({},null,{ limit, skip: skip * limit });
     const length = await Customer.find().count()
 
