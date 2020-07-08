@@ -20,7 +20,7 @@ function controllerAdapter(controller = null, functionName = "") {
 
       res.locals.isHit = true;
 
-      res.status(response.metadata.code).json(response);
+      res.status(response.code).json(response);
     } catch (err) {
       error(err);
       next(err);

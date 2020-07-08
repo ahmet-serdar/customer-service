@@ -37,14 +37,14 @@ class CustomerController {
 
     await customer.save();
 
-    return new responses.CreatedResponse(customer._id);
+    return new responses.CreatedResponse(customer);
   }
 
   async list({ query }) {
     debug('CustomerController - list:', JSON.stringify(query, null, 2));
 
     const { limit , skip } = query;
-    const data = await Customer.find({},null,{ limit, skip: skip * limit });
+    const data = await Customer.find({},null,{ limit, skip});
 
     return new responses.OkResponse(data);
   }

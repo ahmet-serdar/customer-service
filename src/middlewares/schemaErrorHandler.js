@@ -6,9 +6,9 @@ function schemaErrorHandler() {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      const response = new responses.UnprocessableResponse(undefined, errors.mapped());
-
-      return res.status(response.metadata.code).json(response);
+      console.log(errors.array(), 'errorss')
+      const response = new responses.BadRequestResponse(undefined, errors.array());
+      return res.status(response.code).json(response);
       // return res.json({}).end();
     }
 

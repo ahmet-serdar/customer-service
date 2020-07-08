@@ -67,21 +67,30 @@ const router = new express.Router()
  *         schema: 
  *           type: string
  *           example: "Authentication failed! Try again." 
- *       422: 
- *          description: Unprocessable Entity
+ *       400: 
+ *          description: Bad Request
  *          schema:
  *            type: object
  *            example: {
- *                       "code": "422",
- *                       "message": {
- *                                    "firstName": {
- *                                        "msg": "First name cannot be empty",
- *                                        "param": "firstName",
- *                                        "location": "body"
- *                                                 }
- *                                 },
- *                       "timestamp": date
- *                      }
+ *                       "data": null,
+ *                       "metadata": {
+ *                       "code": 400,
+ *                       "message": "BAD_REQUEST"
+ *                       "errors:   [
+ *                                    {
+ *                                     "msg": "First name is required!",
+ *                                     "param": "firstName",
+ *                                     "location": "body"
+ *                                     },
+ *                                     {
+ *                                      "msg": "Last name is required!",
+ *                                      "param": "lastName",
+ *                                      "location": "body"
+ *                                     }
+ *                                 ],
+ *                       "timestamp": "2020-07-05T17:53:21.592Z"
+ *                                     }
+ *                     }
  *       500:
  *         description: Error
  *         schema: 
