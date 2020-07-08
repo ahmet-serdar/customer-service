@@ -73,11 +73,9 @@ const router = new express.Router()
  *            type: object
  *            example: {
  *                       "data": null,
- *                       "metadata": {
  *                       "code": 400,
- *                       "message": "BAD_REQUEST"
- *                       "errors:   [
- *                                    {
+ *                       "message": "BAD_REQUEST",
+ *                       "errors":   [{
  *                                     "msg": "First name is required!",
  *                                     "param": "firstName",
  *                                     "location": "body"
@@ -89,7 +87,6 @@ const router = new express.Router()
  *                                     }
  *                                 ],
  *                       "timestamp": "2020-07-05T17:53:21.592Z"
- *                                     }
  *                     }
  *       500:
  *         description: Error
