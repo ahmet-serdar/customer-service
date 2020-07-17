@@ -136,6 +136,7 @@ router.post("/", auth, checkSchema(validations.create), schemaErrorHandler(), co
  */
 //#endregion
 router.get('/', auth, checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'list'))
+router.get('/search', checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'search'))
 
 
 //#region [swagger: /customers/{id} - GET]

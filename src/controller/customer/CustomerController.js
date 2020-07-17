@@ -43,10 +43,28 @@ class CustomerController {
   async list({ query }) {
     debug('CustomerController - list:', JSON.stringify(query, null, 2));
 
-    const { limit , skip } = query;
+    const { limit , skip } = query; 
     const data = await Customer.find({},null,{ limit, skip});
 
     return new responses.OkResponse(data);
+  }
+
+  async search({ query }) {
+    debug('CustomerController - get:', JSON.stringify(query));
+
+    const { name } = query
+    console.log(name, 'name')
+    const regexQuery = new RegExp(name, 'i')
+
+    const customers = await Customer.find({
+      '$or': [
+          { 'firstName': regexQuery }, 
+          { 'lastName': regexQuery }
+      ]
+  }).exec()
+    return customers
+      ? new responses.OkResponse(customers.map(customer => customer.id))
+      : new responses.NotFoundResponse(undefined, 'Customer not exist!');
   }
 
   async get({ params }) {
@@ -57,9 +75,7 @@ class CustomerController {
 
     return customer
       ? new responses.OkResponse(customer)
-      : new responses.NotFoundResponse(
-          'Customer not exist!'
-        );
+      : new responses.NotFoundResponse(undefined, 'Customer not exist!');
   }
 
   async update(req, res) {
@@ -94,7 +110,7 @@ class CustomerController {
 
     return customer
       ? new responses.OkResponse(customer)
-      : new responses.NotFoundResponse('Customer not exist!');
+      : new responses.NotFoundResponse(undefined, 'Customer not exist!');
   }
 
   async delete({ params, locals }) {
@@ -104,7 +120,7 @@ class CustomerController {
 
     let customer = await Customer.findById(_id);
     if(customer.deletedAt !== null) {
-      return new responses.BadRequestResponse('Customer was already deleted!')
+      return new responses.BadRequestResponse(undefined, 'Customer was already deleted!')
     }
 
     customer = await Customer.findByIdAndUpdate(
@@ -115,7 +131,7 @@ class CustomerController {
 
     return customer
       ? new responses.OkResponse(customer)
-      : new responses.NotFoundResponse('Customer not exist!');
+      : new responses.NotFoundResponse(undefined, 'Customer not exist!');
   }
 }
 
