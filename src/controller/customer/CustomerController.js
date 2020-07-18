@@ -44,16 +44,17 @@ class CustomerController {
     debug('CustomerController - list:', JSON.stringify(query, null, 2));
 
     const { limit , skip } = query; 
-    const data = await Customer.find({},null,{ limit, skip});
+    const data = await Customer.find({},null,{ limit, skip, sort:{firstName: 1}});
+    const count = await Customer.find();
 
-    return new responses.OkResponse(data);
+    return new responses.OkResponse({data, count: count.length});
   }
 
-  async search({ query }) {
+  async search({ query, body }) {
     debug('CustomerController - get:', JSON.stringify(query));
 
     const { name } = query
-    console.log(name, 'name')
+
     const regexQuery = new RegExp(name, 'i')
 
     const customers = await Customer.find({
@@ -63,7 +64,7 @@ class CustomerController {
       ]
   }).exec()
     return customers
-      ? new responses.OkResponse(customers.map(customer => customer.id))
+      ? new responses.OkResponse(customers)
       : new responses.NotFoundResponse(undefined, 'Customer not exist!');
   }
 
