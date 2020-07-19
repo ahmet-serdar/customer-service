@@ -61,8 +61,15 @@ const customerSchema = new mongoose.Schema ({
     lowercase: true
   },
   createdBy: {
+    _id: false,
+    id: {
     type: String,
     required: true
+    },
+    name: {
+      type: String,
+      // required: true
+    }
   },
   deletedAt: {
     type: Date || null,

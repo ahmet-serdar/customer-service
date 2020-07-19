@@ -16,7 +16,9 @@ class CustomerController {
 
   async create({ body, locals }) {
     debug('CustemerController - create:', JSON.stringify(body));
-    const managerID = locals.managerID
+    const managerID = locals.managerID;
+    const managerName = locals.managerName;
+
     const bodyKeys = Object.keys(body);
     const allowedKeys = [
       'firstName',
@@ -24,7 +26,7 @@ class CustomerController {
       'isIndividual',
       'address',
       'phones',
-      'email'
+      'email',
     ];
     const isValidOperation = bodyKeys.every((key) => allowedKeys.includes(key));
 
@@ -33,7 +35,9 @@ class CustomerController {
     }
 
     const customer = new Customer(body);
-    customer.createdBy = managerID
+    customer.createdBy.id = managerID;
+    customer.createdBy.name = managerName;
+    console.log(customer, 'customerrrrrrrr');
 
     await customer.save();
 
@@ -43,28 +47,42 @@ class CustomerController {
   async list({ query }) {
     debug('CustomerController - list:', JSON.stringify(query, null, 2));
 
-    const { limit , skip } = query; 
-    const data = await Customer.find({},null,{ limit, skip, sort:{firstName: 1}});
-    const count = await Customer.find();
+    const { limit, skip } = query;
+    const data = await Customer.find({}, null, {
+      limit,
+      skip,
+      sort: { firstName: 1 },
+    });
+    const count = await Customer.count();
 
-    return new responses.OkResponse({data, count: count.length});
+    return new responses.OkResponse({ data, count: count.length });
   }
 
-  async search({ query, body }) {
+  async search({ query }) {
     debug('CustomerController - get:', JSON.stringify(query));
 
-    const { name } = query
+    const { name, limit, skip } = query;
 
-    const regexQuery = new RegExp(name, 'i')
+    const regexQuery = new RegExp(name, 'i');
 
-    const customers = await Customer.find({
-      '$or': [
-          { 'firstName': regexQuery }, 
-          { 'lastName': regexQuery }
-      ]
-  }).exec()
+    const customers = await Customer.find(
+      {
+        $or: [{ firstName: regexQuery }, { lastName: regexQuery }],
+      },
+      null,
+      {
+        limit,
+        skip,
+        sort: { firstName: -1 },
+      }
+    ).exec();
+
+    const count = await Customer.find({
+      $or: [{ firstName: regexQuery }, { lastName: regexQuery }]
+    }).count();
+
     return customers
-      ? new responses.OkResponse(customers)
+      ? new responses.OkResponse({ data: customers, count: count })
       : new responses.NotFoundResponse(undefined, 'Customer not exist!');
   }
 
@@ -101,7 +119,10 @@ class CustomerController {
       const notAllowedUpdates = updates.filter(
         (update) => !allowedUpdates.includes(update)
       );
-      return new responses.BadRequestResponse(undefined, `${notAllowedUpdates} is/are not allowed to update!`);
+      return new responses.BadRequestResponse(
+        undefined,
+        `${notAllowedUpdates} is/are not allowed to update!`
+      );
     }
 
     const customer = await Customer.findByIdAndUpdate(_id, body, {
@@ -116,12 +137,15 @@ class CustomerController {
 
   async delete({ params, locals }) {
     debug('CustomerController - delete:', JSON.stringify(params));
-    const managerID = locals.managerID
+    const managerID = locals.managerID;
     const _id = params.id;
 
     let customer = await Customer.findById(_id);
-    if(customer.deletedAt !== null) {
-      return new responses.BadRequestResponse(undefined, 'Customer was already deleted!')
+    if (customer.deletedAt !== null) {
+      return new responses.BadRequestResponse(
+        undefined,
+        'Customer was already deleted!'
+      );
     }
 
     customer = await Customer.findByIdAndUpdate(
