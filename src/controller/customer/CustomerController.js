@@ -1,6 +1,7 @@
 /** @format */
 
 const Customer = require('../../repositories/customer');
+const axios = require('axios')
 
 const { debug } = require('@ylz/logger');
 const { responses } = require('@ylz/common');
@@ -14,8 +15,9 @@ class CustomerController {
     return CustomerController.instance;
   }
 
-  async create({ body, locals }) {
-    debug('CustemerController - create:', JSON.stringify(body));
+  async create({ body, locals, headers }) {
+    debug('CustemerController - create:', JSON.stringify({body, headers}));
+    const token = headers.authorization;
     const managerID = locals.managerID;
     const managerName = locals.managerName;
 
@@ -34,10 +36,33 @@ class CustomerController {
       return new responses.BadRequestResponse(undefined, 'Invalid keys!.');
     }
 
+    if(body.phones.length > 0) {
+      let phoneTypes
+      try {
+        const url = process.env.REF_DATA_SVC_URL;
+  
+        phoneTypes = await axios.get(url + '/api/phoneType', {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+      } catch (err) {
+        return new responses.NotFoundResponse(null, 'Phone types could not get from service');
+      }
+
+      body.phones.map(phone => {        
+        phoneTypes.data.data.map(phoneType => {
+          if(phoneType.id === phone.phoneTypeId){
+          phone.phoneTypeId = phoneType.name
+        }
+      })
+      })}
+
     const customer = new Customer(body);
     customer.createdBy.id = managerID;
     customer.createdBy.name = managerName;
-    console.log(customer, 'customerrrrrrrr');
 
     await customer.save();
 
@@ -98,8 +123,9 @@ class CustomerController {
   }
 
   async update(req, res) {
-    const { params, body } = req;
-    debug('CustomerController - update:', JSON.stringify({ params, body }));
+    const { params, body, headers } = req;
+    debug('CustomerController - update:', JSON.stringify({ params, body, headers }));
+    const token = headers.authorization;
 
     const _id = params.id;
     const updates = Object.keys(body);
@@ -124,6 +150,30 @@ class CustomerController {
         `${notAllowedUpdates} is/are not allowed to update!`
       );
     }
+
+    if(body.phones && body.phones.length > 0) {
+      let phoneTypes
+      try {
+        const url = process.env.REF_DATA_SVC_URL;
+  
+        phoneTypes = await axios.get(url + '/api/phoneType', {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+      } catch (err) {
+        return new responses.NotFoundResponse(null, 'Phone types could not get from service');
+      }
+
+      body.phones.map(phone => {        
+        phoneTypes.data.data.map(phoneType => {
+          if(phoneType.id === phone.phoneTypeId){
+          phone.phoneTypeId = phoneType.name
+        }
+      })
+      })}
 
     const customer = await Customer.findByIdAndUpdate(_id, body, {
       new: true,

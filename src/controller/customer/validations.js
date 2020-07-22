@@ -51,10 +51,9 @@ const validations = Object.freeze({
         custom: {
           options: (phones) => {
             if(phones.length > 0) {              
-             const arr = phones.map(phone => {
-                const phoneTypes = ['mobile', 'home','work'];                
+             const arr = phones.map(phone => {               
                 if (phone){
-                  return (phoneTypes.indexOf(phone.phoneTypeId) > -1 && typeof phone.phone === "string" && phone.phone.length > 0 );
+                  return (utilities.isValidObjectId(phone.phoneTypeId) && typeof phone.phone === "string" && phone.phone.length > 0 );
                 }
               })
               if (arr.indexOf(false) === -1) {
