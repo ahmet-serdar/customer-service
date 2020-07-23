@@ -49,7 +49,7 @@ const customerSchema = new mongoose.Schema ({
       trim: true,
       required: true
     },
-    phoneTypeId: {
+    id: {
       type: String,
       trim: true,
       required: true

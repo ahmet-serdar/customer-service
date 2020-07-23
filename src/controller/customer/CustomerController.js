@@ -49,16 +49,13 @@ class CustomerController {
           },
         });
       } catch (err) {
-        return new responses.NotFoundResponse(null, 'Phone types could not get from service');
+        return new responses.InternalServerErrorResponse(null, 'Phone types could not get from service');
       }
 
-      body.phones.map(phone => {        
-        phoneTypes.data.data.map(phoneType => {
-          if(phoneType.id === phone.phoneTypeId){
-          phone.phoneTypeId = phoneType.name
-        }
-      })
-      })}
+    const IDs = body.phones.map(phone => phoneTypes.data.data.indexOf(phone.id) !== -1)
+    if (IDs.includes(false)) {
+      return new responses.NotFoundResponse(null, 'Phone id is wrong!')
+    }}
 
     const customer = new Customer(body);
     customer.createdBy.id = managerID;
@@ -167,13 +164,11 @@ class CustomerController {
         return new responses.NotFoundResponse(null, 'Phone types could not get from service');
       }
 
-      body.phones.map(phone => {        
-        phoneTypes.data.data.map(phoneType => {
-          if(phoneType.id === phone.phoneTypeId){
-          phone.phoneTypeId = phoneType.name
-        }
-      })
-      })}
+      const IDs = body.phones.map(phone => phoneTypes.data.data.indexOf(phone.id) !== -1)
+      if (IDs.includes(false)) {
+        return new responses.NotFoundResponse(null, 'Phone id is wrong!')
+      }
+      }
 
     const customer = await Customer.findByIdAndUpdate(_id, body, {
       new: true,

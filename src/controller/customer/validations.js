@@ -53,7 +53,7 @@ const validations = Object.freeze({
             if(phones.length > 0) {              
              const arr = phones.map(phone => {               
                 if (phone){
-                  return (utilities.isValidObjectId(phone.phoneTypeId) && typeof phone.phone === "string" && phone.phone.length > 0 );
+                  return (utilities.isValidObjectId(phone.id) && typeof phone.phone === "string" && phone.phone.length > 0 );
                 }
               })
               if (arr.indexOf(false) === -1) {
