@@ -37,25 +37,29 @@ class CustomerController {
     }
 
     if(body.phones.length > 0) {
-      let phoneTypes
+      let phoneTypeIds
       try {
         const url = process.env.REF_DATA_SVC_URL;
   
-        phoneTypes = await axios.get(url + '/api/phoneType', {
+        const phoneTypes = await axios.get(url + '/api/phoneType', {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             Authorization: token,
           },
         });
+        phoneTypeIds = phoneTypes.data.data.map(type => type.id )
       } catch (err) {
         return new responses.InternalServerErrorResponse(null, 'Phone types could not get from service');
       }
 
-    const IDs = body.phones.map(phone => phoneTypes.data.data.indexOf(phone.id) !== -1)
-    if (IDs.includes(false)) {
-      return new responses.NotFoundResponse(null, 'Phone id is wrong!')
-    }}
+      const IDs = body.phones.map(phone => {
+        return phoneTypeIds.indexOf(phone.id) !== -1
+      })
+
+      if (IDs.includes(false)) {
+        return new responses.NotFoundResponse(IDs, 'Phone id is wrong!')
+      }}
 
     const customer = new Customer(body);
     customer.createdBy.id = managerID;
@@ -149,26 +153,30 @@ class CustomerController {
     }
 
     if(body.phones && body.phones.length > 0) {
-      let phoneTypes
+      let phoneTypeIds
       try {
         const url = process.env.REF_DATA_SVC_URL;
   
-        phoneTypes = await axios.get(url + '/api/phoneType', {
+        const phoneTypes = await axios.get(url + '/api/phoneType', {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             Authorization: token,
           },
         });
+        phoneTypeIds = phoneTypes.data.data.map(type => type.id )
       } catch (err) {
         return new responses.NotFoundResponse(null, 'Phone types could not get from service');
       }
 
-      const IDs = body.phones.map(phone => phoneTypes.data.data.indexOf(phone.id) !== -1)
+      const IDs = body.phones.map(phone => {
+        return phoneTypeIds.indexOf(phone.id) !== -1
+      })
+  
       if (IDs.includes(false)) {
-        return new responses.NotFoundResponse(null, 'Phone id is wrong!')
+        return new responses.NotFoundResponse(IDs, 'Phone id is wrong!')
       }
-      }
+    }
 
     const customer = await Customer.findByIdAndUpdate(_id, body, {
       new: true,
