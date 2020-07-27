@@ -30,7 +30,7 @@ const router = new express.Router()
  *         in: body
  *         description: Firstname and Lastname are required and must be min 1 letter.
  *                      isIndividual must be boolean or null
- *                      Phones is not required. Phones can be empty array. if phone exist, so must be string and phone type id must be one of "home", "work" or "mobile"
+ *                      Phones is not required. Phones can be empty array. if phone exist, so must be string and phone type id must come from ref-data service
  *         required: true
  *         example: {                    
  *                    "firstName": string,
@@ -46,7 +46,7 @@ const router = new express.Router()
  *                               }],
  *                    "phones": {
  *   	                    "phone": "123 123 1234",
- *                       	"phoneTypeId":"work"
+ *                       	"id":"id from ref-data service"
  *                              },
  *                    "email": "testemail@test.com" 
  *                  }
@@ -136,6 +136,47 @@ router.post("/", auth, checkSchema(validations.create), schemaErrorHandler(), co
  */
 //#endregion
 router.get('/', auth, checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'list'))
+
+//#region [swagger: /customers - GET]
+/**
+ * @swagger
+ * /customers/search:
+ *   get:
+ *     tags:
+ *       - Customer
+ *     summary: Search customers 
+ *     description: Returns all customers
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: authorization
+ *         description: Bearer Authentication Token (It will be written as "Bearer + space + idToken" )
+ *         in: header
+ *         type: string
+ *         required: true
+ *       - in: query
+ *         name: skip
+ *         type: integer
+ *         description: The number of pages to skip before starting to collect the result set.
+ *       - in: query
+ *         name: limit
+ *         type: integer
+ *         description: The numbers of customers to return.
+ *       - in: query
+ *         name: name
+ *         type: string
+ *         description: Some letters for searc customers by first name and last name.
+ *     responses:
+ *       200:
+ *         description: An array of customers and number of all customers in the database for search result
+ *       401:
+ *         description: Unauthorized Error
+ *         schema: 
+ *           type: string
+ *           example: "Authentication failed! Try again."    
+ *            
+ */
+//#endregion
 router.get('/search', checkSchema(validations.list), schemaErrorHandler(), controllerAdapter(customerControllerInstance, 'search'))
 
 
@@ -219,7 +260,7 @@ router.get('/:id', auth, checkSchema(validations.get), schemaErrorHandler(),cont
  *                    "address": [],
  *                    "phones": {
  *   	                    "phone": "123 456 789",
- *                       	"phoneTypeId":"work"
+ *                       	"id":"id from ref-data service"
  *                              },
  *                    "email": "testemail@test.com" 
  *                  }
