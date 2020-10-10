@@ -8,7 +8,7 @@ const verifier = new OktaJwtVerifier({
   issuer: oktaIssuer,
   clientId: oktaClientId,
   assertClaims: {
-    'groups.includes': ['Manager' || 'Admin']
+    'groups.includes': []
   }
 });
 
